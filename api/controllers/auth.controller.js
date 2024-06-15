@@ -9,9 +9,9 @@ export const signup = async (req, res, next) => {
 
     if (!username || !email || !password || username === '' || email === '' || password === '') {
         //here we created an error,instead of this we can use error.js to handle such error messages
-        return res.status(400).json({message:'All fields are required'});
-        //i dont know why but the below is not working
-        // next(errorHandler(400, 'All fields are required'));
+        // return res.status(400).json({message:'All fields are required'});
+        //i dont know why but the below is not working,when given return it works
+        return next(errorHandler(400, 'All fields are required'));
     }
     const hashedPassword = bcryptjs.hashSync(password, 10);
     const newUser = new User({
