@@ -28,3 +28,15 @@ app.listen(3000, () => {
 //instead of the above line now i can use:
 app.use('/api/user',userRoutes);//this is coming from the export of user.route.js
 app.use('/api/auth',authRoutes);//this is coming from the export of auth.route.js
+
+
+//middleware to handle errors
+app.use((err,req,res,next)=>{//next indicates that i want to go to the next middleware
+    const statusCode=err.statusCode || 500;
+    const message=err.message || 'Internal Server Error';
+    res.status(statusCode).json({
+        success:false,
+        statusCode,
+        message
+    })
+});
