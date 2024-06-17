@@ -2,11 +2,14 @@ import { Alert, Button, Label, Spinner, TextInput } from 'flowbite-react';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import cors from 'cors';
+import { useDispatch,useSelector} from 'react-redux';
+import { signInStart,signInFailure,signInSuccess } from '../redux/user/userSlice';
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+ // const [errorMessage, setErrorMessage] = useState(null);
+ const { loading, error: errorMessage } = useSelector((state) => state.user);//down in the alert we have used errorMessage ,userSlice me line 5 me jo error likha h vo bhi same kaam karega ,we can access that using the useSelector
+const dispatch=useDispatch();
   const navigate = useNavigate();
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -15,11 +18,15 @@ export default function SignIn() {
     
     e.preventDefault();//this will prevent the page being refreshed everytime we click on signup
     if (!formData.email || !formData.password) {
-      return setErrorMessage('Please fill out all fields.');//id details are partially filled ,this will appear
+      //return setErrorMessage('Please fill out all fields.');//id details are partially filled ,this will appear
+      return dispatch(signInFailure('Please fill all the fields'));
+
     }
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      //instead of setLoading and setErrorMessage we an use the reduc userSlice 'signInstart'
+      // setLoading(true);
+      // setErrorMessage(null);
+      dispatch(signInStart());
       const res = await fetch('api/auth/signin', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -27,15 +34,19 @@ export default function SignIn() {
       });
       const data = await res.json();    
       if (data.success === false) {
-        return setErrorMessage(data.message);
+        //instead of this we can use signInFailure,both does the same task
+        //return setErrorMessage(data.message);
+        dispatch(signInFailure(data.message));
       }
-      setLoading(false);
+  
       if(res.ok) {
+        dispatch(signInSuccess(data));
         navigate('/');
       }
     } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
+      // setErrorMessage(error.message);
+      // setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
   return (
