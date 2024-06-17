@@ -21,7 +21,7 @@ export const signup = async (req, res, next) => {
         email,
         password: hashedPassword,
     });
-    //if we dont write try and catch here then if any errora are there it will be showing only here on the vs code terminal but not on the mongoose appliction.
+    //if we dont write try and catch here then if any errors are there it will be showing only here on the vs code terminal but not on the mongoose appliction.
     try {
         await newUser.save();
         res.json('Signup successful');
@@ -36,7 +36,7 @@ export const signin=async(req,res,next)=>{
     const{email,password}=req.body;
 
     if(!email || !password || email==='' || password===''){
-        next(errorHandler(400,'All fields are required'));
+        return next(errorHandler(400,'All fields are required'));
     }
     try {
         const validUser=await User.findOne ({email});//findone will do the search operation
@@ -54,10 +54,10 @@ export const signin=async(req,res,next)=>{
         const {password:pass,...rest}=validUser._doc;//if we dont write this line we are getting the password in the output log in hashed format,now we are not getting the password,and a cookie is also generated and nobody can understand it without our secret key
         res.status(200).cookie('access_token',token,
             {
-            httpOnly:true,
+            httpOnly:true
         })
         .json(rest );
     } catch (error) {
-        next(error);
+            next(error);
     }
 }
