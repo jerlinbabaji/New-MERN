@@ -2,6 +2,8 @@ import { nextTick } from "process";
 import User from "../models/user.model.js";
 import bcryptjs from 'bcryptjs';//say if somebody hacked our system then they will have access to our password too,so inorder to hash the passwords we use bcrypt
 import { errorHandler } from '../utils/error.js';
+import bcrypt from "bcryptjs/dist/bcrypt.js";
+import jwt from 'jsonwebtoken';
 export const signup = async (req, res, next) => {
     //instead of using control log u can use:
     // console.log(req.body);
@@ -29,3 +31,33 @@ export const signup = async (req, res, next) => {
     await newUser.save();
     res.json('Signup successful');
 };
+
+export const signin=async(req,res,next)=>{
+    const{email,password}=req.body;
+
+    if(!email || !password || email==='' || password===''){
+        next(errorHandler(400,'All fields are required'));
+    }
+    try {
+        const validUser=await User.findOne ({email});//findone will do the search operation
+        if(!validUser){
+           return next(errorHandler(404,'User not found'));
+        }
+        const validPassword=bcryptjs.compareSync(password,validUser.password);//comparesync will get the password hash it and compare it with the user's if error found then error message is printed,else we have to authenticate the user wbich is done using the jwt tokens.
+        if(!validPassword){
+            return next(errorHandler(400,'Invalid password'));
+        }
+        //jwt is based on a secret key that is unique to us,else our user cookies and be hijacked.
+        const token =jwt.sign(
+            {id: validUser._id},process.env.JWT_SECRET
+        );
+        const {password:pass,...rest}=validUser._doc;//if we dont write this line we are getting the password in the output log in hashed format,now we are not getting the password,and a cookie is also generated and nobody can understand it without our secret key
+        res.status(200).cookie('access_token',token,
+            {
+            httpOnly:true,
+        })
+        .json(rest );
+    } catch (error) {
+        next(error);
+    }
+}
