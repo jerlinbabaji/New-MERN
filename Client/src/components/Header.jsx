@@ -2,13 +2,14 @@ import React from 'react';
 import { Button, Navbar, TextInput,Dropdown,Avatar } from 'flowbite-react';
 import { Link ,useLocation} from 'react-router-dom';//use loacation is used to highlight when we place the mouse pointer to about,home,projects,this is activated below by the line <Navbar.Link active={path === "/Home"}>
 import { AiOutlineSearch } from 'react-icons/ai';
-import { FaMoon } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
-
+import { FaMoon ,FaSun} from 'react-icons/fa';
+import { useSelector ,useDispatch} from 'react-redux';
+import { toggleTheme } from '../redux/theme/themeSlice';
 function Header() {
     const path=useLocation().pathname;
-    const {currentUser}=useSelector(state=>state.user)
-
+    const {currentUser}=useSelector(state=>state.user);
+    const dispatch=useDispatch();
+    const { theme } =useSelector((state)=>state.theme);
     const handleSignout = async () => {
       try {
         const res = await fetch('/api/user/signout', {
@@ -46,8 +47,9 @@ function Header() {
         </Button>
       </form>
       <div className='flex gap-2 md:order-2'>
-        <Button className='w-12 h-10 hidden sm:inline' color='gray' pill>
-          <FaMoon />
+        <Button className='w-12 h-10 hidden sm:inline' color='gray' pill onClick={()=>dispatch(toggleTheme())}>
+        {theme === 'light' ? <FaSun /> : <FaMoon />}
+
         </Button>
         {currentUser ? (
           <Dropdown
