@@ -149,7 +149,7 @@ export default function DashProfile() {
       dispatch(deleteUserFailure(error.message));
     }
   };
-
+//creating handle sign out functionality
   const handleSignout = async () => {
     try {
       const res = await fetch('/api/user/signout', {

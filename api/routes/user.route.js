@@ -1,5 +1,5 @@
 import express from 'express';
-import { test,updateUser ,deleteUser} from '../controllers/user.controller.js';
+import { test,updateUser ,deleteUser,signout} from '../controllers/user.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';
 const router = express.Router();
 //everytime writing like below is not a good practice therefore we create a controller:
@@ -13,5 +13,5 @@ router.put('/update/:userId',verifyToken ,updateUser);
 router.delete('/delete/:userId',verifyToken,deleteUser);
 
 //if that id is equal to the id we got when send request in insonmia in our vs code then the user is a valid user
-
+router.post('/signout',signout);
 export default router;
