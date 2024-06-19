@@ -1,4 +1,4 @@
-import {BrowserRouter,Routes,Route} from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home';
 import About from './pages/About';
 import SignIn from './pages/SignIn';
@@ -11,7 +11,7 @@ import PrivateRoute from './components/PrivateRoute';
 export default function App() {
   return (
     <BrowserRouter>
-    <Header/>
+      <Header />
       <Routes>
         <Route path="/Home" element={<Home />} />
         <Route path="/about" element={<About />} />
@@ -19,12 +19,12 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path="/projects" element={<Projects />} />
         {/* //to make the dashboard private that is if you are not signed in then you cannot access the dashboard */}
-        <Route element={<PrivateRoute/>}>
+        <Route element={<PrivateRoute />}>
 
-        <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
-        
-      
+
+
       </Routes>
       <Footer />
     </BrowserRouter>

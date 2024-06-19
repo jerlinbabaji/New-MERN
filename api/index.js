@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import userRoutes from './routes/user.route.js';//as we gave export default any name can be given
 import authRoutes from './routes/auth.route.js';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 dotenv.config();
 //here i have a special character in my password so it should be url encoded,that is Jerlin123@ after url encoding you will get Jerlin123%40,then you will have the mongodb
  await mongoose.connect(process.env.MONGO)
@@ -18,6 +19,7 @@ dotenv.config();
     });
 const app = express();
 app.use(express.json());//this  will start json in the backend
+app.use(cookieParser());
 
 app.use(cors());
 
