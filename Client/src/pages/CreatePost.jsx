@@ -1,4 +1,4 @@
-import { Alert,Button, FileInput, Select, TextInput } from 'flowbite-react';
+import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import {
@@ -11,12 +11,16 @@ import { app } from '../firebase';
 import { useState } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
- 
+import { useNavigate } from 'react-router-dom';
+
 export default function CreatePost() {
   const [file, setfile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
+  const [publishError, setPublishError] = useState(null);
+  const navigate = useNavigate();
+  
   const handleUploadImage = async () => {
     try {
       if (!file) {
@@ -53,11 +57,36 @@ export default function CreatePost() {
       console.log(error);
     }
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('/api/post/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setPublishError(data.message);
+        return;
+      }
+      if (res.ok) {
+        setPublishError(null);
+        navigate(`/post/${data.slug}`);
+      }
+    } catch (error) {
+      setPublishError('Something went wrong');
+    }
+  };
+
   return (
     <div className='p-3 max-w-3xl mx-auto min-h-screen'>
       <h1 className='text-center text-3xl my-7 font-semibold'>Create a post</h1>
-      <form className='flex flex-col gap-4'>
-        {/* //when we have a small screen title and select a category should be one under the other and when full screen it should be side by side. */}
+      <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+        {/* When we have a small screen title and select a category should be one under the other and when full screen it should be side by side. */}
         <div className='flex flex-col gap-4 sm:flex-row justify-between'>
           <TextInput
             type='text'
@@ -65,17 +94,24 @@ export default function CreatePost() {
             required
             id='title'
             className='flex-1'
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
           />
-          <Select>
+          <Select
+            onChange={(e) =>
+              setFormData({ ...formData, category: e.target.value })
+            }
+          >
             <option value='uncategorized'>Select a category</option>
             <option value='javascript'>JavaScript</option>
             <option value='reactjs'>React.js</option>
             <option value='nextjs'>Next.js</option>
           </Select>
         </div>
-        {/* //creating the dotted rectangular box in the next line*/}
+        {/* Creating the dotted rectangular box in the next line */}
         <div className='flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3'>
-          <FileInput type='file' accept='image/*' onChange={(e)=>setfile(e.target.files[0])}/>
+          <FileInput type='file' accept='image/*' onChange={(e) => setfile(e.target.files[0])} />
           <Button
             type='button'
             gradientDuoTone='purpleToBlue'
@@ -84,7 +120,6 @@ export default function CreatePost() {
             onClick={handleUploadImage}
             disabled={imageUploadProgress}
           >
-            
             {imageUploadProgress ? (
               <div className='w-16 h-16'>
                 <CircularProgressbar
@@ -104,18 +139,25 @@ export default function CreatePost() {
             alt='upload'
             className='w-full h-72 object-cover'
           />
-        )
-        }
-        {/* //creating the box where we can post,has normal,bold,italian,underline all built in in the react quill. */}
+        )}
+        {/* Creating the box where we can post, has normal, bold, italic, underline all built in in the react quill. */}
         <ReactQuill
           theme='snow'
           placeholder='Write something...'
           className='h-72 mb-12'
           required
+          onChange={(value) => {
+            setFormData({ ...formData, content: value });
+          }}
         />
         <Button type='submit' gradientDuoTone='purpleToPink'>
           Publish
         </Button>
+        {publishError && (
+          <Alert className='mt-5' color='failure'>
+            {publishError}
+          </Alert>
+        )}
       </form>
     </div>
   );
