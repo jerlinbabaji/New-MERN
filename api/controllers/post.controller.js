@@ -25,3 +25,54 @@ export const create = async (req, res, next) => {
     next(error);
   }
 };
+ 
+
+export const getposts = async (req, res, next) => {
+  try {
+    //we need to know which post to start fetching,which should be a number so we covert the query to number if not mentioned start from 0
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    //we also want to limit the number of posts we want to show 
+    const limit = parseInt(req.query.limit) || 9;
+    //say we need to know the order in which the posts were created we use this.,if 1 sort in ascending if -1 sort in descending 
+    const sortDirection = req.query.order === 'asc' ? 1 : -1;
+    //if we want to search for particular userid or category or slug etc..
+    const posts = await Post.find({
+      ...(req.query.userId && { userId: req.query.userId }),
+      ...(req.query.category && { category: req.query.category }),
+      ...(req.query.slug && { category: req.query.slug }),
+      ...(req.query.postId && { _id: req.query.postId }),
+      ...(req.query.searchTerm && {
+        $or: [ 
+          //if we want to search a particular item via text
+          { title: { $regex: req.query.searchTerm, $options: 'i' } },
+          { content: { $regex: req.query.searchTerm, $options: 'i' } },
+        ],
+      }),
+    })
+      .sort({ updatedAt: sortDirection })
+      .skip(startIndex)
+      .limit(limit);
+
+    const totalPosts = await Post.countDocuments();
+
+    const now = new Date();
+//from today till the last month
+    const oneMonthAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 1,
+      now.getDate()
+    );
+
+    const lastMonthPosts = await Post.countDocuments({
+      createdAt: { $gte: oneMonthAgo },
+    });
+
+    res.status(200).json({
+      posts,
+      totalPosts,
+      lastMonthPosts,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
