@@ -1,6 +1,6 @@
 import { Button, FileInput, Select, TextInput } from 'flowbite-react';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
 
 export default function CreatePost() {
   return (

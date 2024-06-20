@@ -5,6 +5,7 @@ import userRoutes from './routes/user.route.js';//as we gave export default any 
 import authRoutes from './routes/auth.route.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import postRoutes from './routes/post.route.js';
 dotenv.config();
 //here i have a special character in my password so it should be url encoded,that is Jerlin123@ after url encoding you will get Jerlin123%40,then you will have the mongodb
  await mongoose.connect(process.env.MONGO)
@@ -34,7 +35,7 @@ app.listen(3000, () => {
 //instead of the above line now i can use:
 app.use('/api/user',userRoutes);//this is coming from the export of user.route.js
 app.use('/api/auth',authRoutes);//this is coming from the export of auth.route.js
-
+app.use('/api/post',postRoutes);
 
 //middleware to handle errors
 app.use((err,req,res,next)=>{//next indicates that i want to go to the next middleware
