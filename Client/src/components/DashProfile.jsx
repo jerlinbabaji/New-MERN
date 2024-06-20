@@ -161,7 +161,7 @@ export default function DashProfile() {
       } else {
         dispatch(signoutSuccess());
       }
-    } catch (error) {
+    } catch (error) { 
       console.log(error.message);
     }
   };
@@ -238,10 +238,12 @@ export default function DashProfile() {
           type='submit'
           gradientDuoTone='purpleToBlue'
           outline
+          //loading effect for update function
           disabled={loading || imageFileUploading}
         >
           {loading ? 'Loading...' : 'Update'}
         </Button>
+        {/* //if current user is the admin or if true then allow button for creatte post */}
         {currentUser.isAdmin && (
           <Link to={'/create-post'}>
             <Button
