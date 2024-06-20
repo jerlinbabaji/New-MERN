@@ -20,7 +20,13 @@ const userSchema=new mongoose.Schema({
         type:String,
         default:"https://images.unsplash.com/photo-1518806118471-f28b20a1d79d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80",
     },
-}, {timestamps:true}//by adding this mongodb will automatically store the time of creation and time of update.
+    isAdmin:{
+        type:Boolean,
+        default:false,
+
+    }, 
+}, 
+{timestamps:true}//by adding this mongodb will automatically store the time of creation and time of update.
 );
 
 //creating the model:

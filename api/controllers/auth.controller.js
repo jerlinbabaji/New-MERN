@@ -49,7 +49,7 @@ export const signin=async(req,res,next)=>{
         }
         //jwt is based on a secret key that is unique to us,else our user cookies and be hijacked.
         const token =jwt.sign(
-            {id: validUser._id},process.env.JWT_SECRET
+            {id: validUser._id,isAdmin:validUser.isAdmin},process.env.JWT_SECRET
         );
         const {password:pass,...rest}=validUser._doc;//if we dont write this line we are getting the password in the output log in hashed format,now we are not getting the password,and a cookie is also generated and nobody can understand it without our secret key
         res.status(200).cookie('access_token',token,
@@ -68,6 +68,7 @@ export const google = async (req, res, next) => {
       const user = await User.findOne({ email });
       if (user) {
         const token = jwt.sign(
+          //add isAdmit here too
           { id: user._id, isAdmin: user.isAdmin },
           process.env.JWT_SECRET
         );
