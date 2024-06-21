@@ -6,7 +6,7 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 const firebaseConfig = {
     //the api key should be kept private so create an environmental variable for it.
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  apiKey: "AIzaSyAypiorQa1Mp3vW7CalWciGiru-v5yujJ8",
   authDomain: "mern-blog-6ea49.firebaseapp.com",
   projectId: "mern-blog-6ea49",
   storageBucket: "mern-blog-6ea49.appspot.com",
