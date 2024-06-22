@@ -1,7 +1,7 @@
 import { Button, Spinner } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-
+import CallToAction from '../components/CallToAction';
 export default function PostPage() {
   const { postSlug } = useParams();
   //when we refresh the page we want to see a spinning loading effect
@@ -51,6 +51,9 @@ export default function PostPage() {
         <span className='italic'>{post && (post.content.length /1000).toFixed(0)} mins read</span>
     </div>
     <div className='p-3 max-w-2xl mx-auto w-full post-content' dangerouslySetInnerHTML={{__html: post && post.content}}>
+    </div>
+    <div className="max-w-4xl mx-auto w-full">
+        <CallToAction />
 
     </div>
   </main>;
