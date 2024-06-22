@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.route.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import postRoutes from './routes/post.route.js';
+import commentRoutes from './routes/comment.route.js';
 dotenv.config();
 //here i have a special character in my password so it should be url encoded,that is Jerlin123@ after url encoding you will get Jerlin123%40,then you will have the mongodb
 console.log(process.env.MONGO);
@@ -37,7 +38,7 @@ app.listen(3000, () => {
 app.use('/api/user', userRoutes);//this is coming from the export of user.route.js
 app.use('/api/auth', authRoutes);//this is coming from the export of auth.route.js
 app.use('/api/post', postRoutes);
-
+app.use('/api/comment',commentRoutes);
 //middleware to handle errors
 app.use((err, req, res, next) => {//next indicates that i want to go to the next middleware
     const statusCode = err.statusCode || 500;
