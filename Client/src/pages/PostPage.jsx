@@ -57,6 +57,6 @@ export default function PostPage() {
         <CallToAction />
 
     </div>
-    <CommentSection postId={post._id}/>
+    <CommentSection postId={post && post._id}/>
   </main>;
 }

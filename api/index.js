@@ -38,7 +38,7 @@ app.listen(3000, () => {
 app.use('/api/user', userRoutes);//this is coming from the export of user.route.js
 app.use('/api/auth', authRoutes);//this is coming from the export of auth.route.js
 app.use('/api/post', postRoutes);
-app.use('/api/comment',commentRoutes);
+app.use('/api/comment', commentRoutes);
 //middleware to handle errors
 app.use((err, req, res, next) => {//next indicates that i want to go to the next middleware
     const statusCode = err.statusCode || 500;
